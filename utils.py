@@ -121,5 +121,35 @@ def imageOut(filename, _outputs, _targets, saveTargets=False, normalize=False, s
         BW_im.save( filename + "_bw.png")
 
 
+def imageOut(filename, _outputs, saveTargets=True, normalize=False):
+    outputs = np.copy(_outputs)
+    for i in range(3):
+        outputs[i] = np.flipud(outputs[i].transpose())
+        min_value = np.min(outputs[i])
+        max_value = np.max(outputs[i])
+        if normalize:
+            outputs[i] -= min_value
+            max_value -= min_value
+            outputs[i] /= max_value
+        else: # from -1,1 to 0,1
+            outputs[i] -= -1.
+            outputs[i] /= 2.
+
+        suffix = ""
+        if i==0:
+            suffix = "_pressure"
+        elif i==1:
+            suffix = "_velX"
+        else:
+            suffix = "_velY"
+
+        im = Image.fromarray(cm.magma(outputs[i], bytes=True))
+        im = im.resize((128,128))
+        im.save(filename + suffix + "_pred.png")
+
+
 def saveOutput(output_arr, target_arr):
-    imageOut("result", output_arr, target_arr, normalize=False, saveMontage=True) # write normalized with error
+    if target_arr is None:
+        imageOut("result", output_arr)
+    else:
+        imageOut("result", output_arr, target_arr, normalize=False, saveMontage=True) # write normalized with error
