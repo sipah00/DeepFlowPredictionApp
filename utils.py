@@ -150,6 +150,6 @@ def imageOut(filename, _outputs, saveTargets=True, normalize=False):
 
 def saveOutput(output_arr, target_arr):
     if target_arr is None:
-        imageOut("result", output_arr)
+        imageOut("./result/result", output_arr)
     else:
-        imageOut("result", output_arr, target_arr, normalize=False, saveMontage=True) # write normalized with error
+        imageOut("./result/result", output_arr, target_arr, normalize=False, saveMontage=True) # write normalized with error
