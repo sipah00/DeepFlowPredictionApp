@@ -76,7 +76,7 @@ if sts:
         resid = solver(np_arr, expo=5)
         print(resid)
         if resid == 1:
-            st.image('result.png')
+            st.image('result/result.png')
             st.balloons()
 
     elif ux and uy and airfoil_type:
@@ -117,11 +117,11 @@ if sts:
         if resid == 1:
             col1, col2, col3 = st.beta_columns(3)
             col1.header('Velocity X')
-            col1.image('result_velX_pred.png', use_column_width=True)
+            col1.image('result/result_velX_pred.png', use_column_width=True)
             col2.header('Velocity Y')
-            col2.image('result_velY_pred.png', use_column_width=True)
+            col2.image('result/result_velY_pred.png', use_column_width=True)
             col3.header('Pressure')
-            col3.image('result_pressure_pred.png', use_column_width=True)
+            col3.image('result/result_pressure_pred.png', use_column_width=True)
             st.balloons()
 
 
