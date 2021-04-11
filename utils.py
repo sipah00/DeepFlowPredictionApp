@@ -15,9 +15,6 @@ class InputData:
         self.max_targets_1 = 2.04
         self.max_targets_2 = 2.37
 
-        self.removePOffset = True
-        self.makeDimLess = True
-    
         if npz_arr.shape[0] >= 3:
             self.input = npz_arr[0:3]
         if npz_arr.shape[0] == 6:
@@ -29,17 +26,13 @@ class InputData:
         self.normalize()
 
     def normalize(self):
-        if self.input is not None:
-            self.input[0, :, :] *= 1 / self.max_inputs_0
-            self.input[1, :, :] *= 1 / self.max_inputs_1
-
         if self.target is not None:
             if self.removePOffset:
                 self.target[0,:,:] -= np.mean(self.target[0,:,:]) # remove offset
-                self.target[1,:,:] -= self.target[0,:,:] * self.input[2,:,:]  # pressure * mask
+                self.target[0,:,:] -= self.target[0,:,:] * self.input[2,:,:]  # pressure * mask
 
             if self.makeDimLess: 
-                v_norm = (np.max(np.abs(self.input[0,:,:]))**2 + np.max(np.abs(self.input[1,:,:]))**2)**0.5 
+                v_norm = ( np.max(np.abs(self.input[0,:,:]))**2 + np.max(np.abs(self.input[1,:,:]))**2 )**0.5 
                 self.target[0,:,:] /= v_norm**2
                 self.target[1,:,:] /= v_norm
                 self.target[2,:,:] /= v_norm
@@ -48,6 +41,21 @@ class InputData:
             self.target[1,:,:] *= (1.0/self.max_targets_1)
             self.target[2,:,:] *= (1.0/self.max_targets_2)
 
+        if self.input is not None:
+            self.input[0, :, :] *= 1 / self.max_inputs_0
+            self.input[1, :, :] *= 1 / self.max_inputs_1
+
+    def denormalize(self, data, v_norm):
+        a = data.copy()
+        a[0,:,:] /= (1.0/self.max_targets_0)
+        a[1,:,:] /= (1.0/self.max_targets_1)
+        a[2,:,:] /= (1.0/self.max_targets_2)
+
+        if self.makeDimLess:
+            a[0,:,:] *= v_norm**2
+            a[1,:,:] *= v_norm
+            a[2,:,:] *= v_norm
+        return a
 
 
 # image output
