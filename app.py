@@ -4,7 +4,8 @@ import tempfile
 import torch
 import numpy as np
 from imageio import imread
-import os
+from PIL import Image
+import os  
 
 
 from DfpNet import TurbNetG 
@@ -58,10 +59,17 @@ airfoil_type = st.sidebar.multiselect('Airfoil type', airfoil_files)
 
 
 st.sidebar.write('OR')
-st.sidebar.write('Upload input file in npz format')
+airfoil_img_file = st.sidebar.file_uploader('Choose airfoil file (Binary Image)', type='png')
 
-upload_file = st.sidebar.file_uploader('Choose file...')
 
+
+
+my_expander = st.sidebar.beta_expander('Upload input file in npz format')
+# my_expander.write('Upload input file in npz format')
+upload_file = my_expander.file_uploader('Choose file...')
+
+
+st.sidebar.write('')
 sts = st.sidebar.button('Submit')
 
 
@@ -79,9 +87,13 @@ if sts:
             st.image('result/result.png')
             st.balloons()
 
-    elif ux and uy and airfoil_type:
-        print(airfoil_type)
-        im = imread(f'airfoils/{airfoil_type[0]}.png')
+    elif ux and uy and (airfoil_type or airfoil_img_file):
+        if airfoil_type:
+            im = imread(f'airfoils/{airfoil_type[0]}.png')
+        else:
+            image = Image.open(airfoil_img_file)
+            im = np.array(image)  
+        
         np_im = np.array(im)
         np_im = np_im / np.max(np_im)
 
@@ -123,9 +135,3 @@ if sts:
             col3.header('Pressure')
             col3.image('result/result_pressure_pred.png', use_column_width=True)
             st.balloons()
-
-
-
-
-
-
