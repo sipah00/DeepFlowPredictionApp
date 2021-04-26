@@ -105,7 +105,8 @@ if sts:
         # c2.header('Lift-to-Drag Ratio')
         # c2.write('0.37')
 
-        st.header('Lift-to-Drag Ratio is 0.37') 
+        # st.header('Lift-to-Drag Ratio is 0.37') 
+        st.header('') 
 
         
         np_im = np.flipud(np_im).transpose() # in model's input format
